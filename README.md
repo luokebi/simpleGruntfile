@@ -2,6 +2,7 @@
 
 > 创建一个简单的 Gruntfile [grunt-init][].
 
+[grunt-init]: http://gruntjs.com/project-scaffolding
 
 ## 安装
 首先需要先安装 [grunt-init][].
