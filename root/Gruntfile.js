@@ -2,42 +2,26 @@
 module.exports = function(grunt) {
 
   // Project configuration.
-  grunt.initConfig({{% if (min_concat) { %}
-    // Metadata.{% if (package_json) { %}
+  grunt.initConfig({
+    // Metadata.
     pkg: grunt.file.readJSON('package.json'),
-    banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
-      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-      ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',{% } else { %}
-    meta: {
-      version: '0.1.0'
-    },
-    banner: '/*! PROJECT_NAME - v<%= meta.version %> - ' +
-      '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      '* http://PROJECT_WEBSITE/\n' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> ' +
-      'YOUR_NAME; Licensed MIT */\n',{% } } %}
-    // Task configuration.{% if (min_concat) { %}
-    concat: {
-      options: {
-        banner: '<%= banner %>',
-        stripBanners: true
-      },
-      dist: {
-        src: ['{%= lib_dir %}/{%= file_name %}.js'],
-        dest: 'dist/{%= file_name %}.js'
-      }
-    },
+    banner: '/*!\n' +
+      '* name: <%= pkg.name %>\n' +
+      '* version: <%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+      '<%= pkg.homepage ? "* Homepage: " + pkg.homepage + "\\n" : "" %>' +
+      '<%= pkg.repository.url ? "* Repository: "+ pkg.repository.url + "\\n" : "" %>' +
+      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
+      '* Licensed <%= _.pluck(pkg.license, "type").join(", ") %> \n*/\n',
+    // Task configuration.
     uglify: {
       options: {
         banner: '<%= banner %>'
       },
       dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/{%= file_name %}.min.js'
+        src: 'src/<%= pkg.name %>.js',
+        dest: 'dist/<%= pkg.name %>.min.js'
       }
-    },{% } %}
+    },
     jshint: {
       options: {
         curly: true,
@@ -48,47 +32,26 @@ module.exports = function(grunt) {
         noarg: true,
         sub: true,
         undef: true,
-        unused: true,
+        unused: false,
         boss: true,
-        eqnull: true,{% if (dom) { %}
-        browser: true,{% } %}
-        globals: {{% if (jquery) { %}
-          jQuery: true
-        {% } %}}
+        eqnull: true,
+        browser: true,
+        globals: {jQuery:true}
       },
       gruntfile: {
         src: 'Gruntfile.js'
       },
       lib_test: {
-        src: ['{%= lib_dir %}/**/*.js', '{%= test_dir %}/**/*.js']
-      }
-    },{% if (dom) { %}
-    {%= test_task %}: {
-      files: ['{%= test_dir %}/**/*.html']
-    },{% } else { %}
-    {%= test_task %}: {
-      files: ['{%= test_dir %}/**/*_test.js']
-    },{% } %}
-    watch: {
-      gruntfile: {
-        files: '<%= jshint.gruntfile.src %>',
-        tasks: ['jshint:gruntfile']
-      },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', '{%= test_task %}']
+        src: ['src/<%= pkg.name %>.js']
       }
     }
   });
 
-  // These plugins provide necessary tasks.{% if (min_concat) { %}
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');{% } %}
-  grunt.loadNpmTasks('grunt-contrib-{%= test_task %}');
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task.
-  grunt.registerTask('default', ['jshint', '{%= test_task %}'{%= min_concat ? ", 'concat', 'uglify'" : "" %}]);
+  grunt.registerTask('default', ['jshint', 'uglify']);
 
 };
