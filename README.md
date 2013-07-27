@@ -10,10 +10,14 @@
 grunt-init 安装之后, 将template放到 `~/.grunt-init/` 目录下. 建议使用git clone 到那个目录下:
 
 ```
-git clone https://github.com/gruntjs/grunt-init-gruntfile.git ~/.grunt-init/gruntfile
+git clone https://github.com/gruntjs/grunt-init-gruntfile.git ~/.grunt-init/simpleGruntfile
 ```
 
-_(Windows 用户, 去 [the documentation][grunt-init] 找正确的目标目录)_
+_(Windows 用户, 使用 %USERPROFILE%\.grunt-init\ 这个目录,如下：)_
+
+```
+git clone https://github.com/gruntjs/grunt-init-gruntfile.git %USERPROFILE%\.grunt-init\simpleGruntfile
+```
 
 ## 用法
 
